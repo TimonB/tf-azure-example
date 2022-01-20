@@ -216,11 +216,8 @@ resource "azurerm_virtual_machine" "main" {
  }
 }
 
-
-
-
 resource "azurerm_managed_disk" "ghes-data" {
-  name                 = "${local.vm_name}-disk1"
+  name                 = "ghes-disk1"
   location              = "germanywestcentral"
   resource_group_name   = azurerm_resource_group.myterraformgroup.name
   storage_account_type = "Standard_LRS"
@@ -235,7 +232,10 @@ resource "azurerm_virtual_machine_data_disk_attachment" "example" {
   caching            = "ReadWrite"
 }
 
-
+output "public_ip" {
+  value       = azurerm_public_ip.main.ip_address
+  description = "The IP address of the GitHub Enterprise Server instance"
+}
 
 
 #resource "azurerm_kubernetes_cluster" "example" {
