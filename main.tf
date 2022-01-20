@@ -136,6 +136,75 @@ resource "azurerm_linux_virtual_machine" "myterraformvm" {
     }
 }
 
+# Create public IPs
+resource "azurerm_public_ip" "ghespublicip" {
+    name                         = "ghesPublicIP"
+    location                     = "germanywestcentral"
+    resource_group_name          = azurerm_resource_group.myterraformgroup.name
+    allocation_method            = "Dynamic"
+
+    tags = {
+        environment = "Terraform Demo"
+    }
+}
+
+
+resource "azurerm_network_interface" "ghesnic" {
+    name                      = "ghesnic"
+    location                  = "germanywestcentral"
+    resource_group_name       = azurerm_resource_group.myterraformgroup.name
+
+    ip_configuration {
+        name                          = "myNicConfiguration"
+        subnet_id                     = azurerm_subnet.myterraformsubnet.id
+        private_ip_address_allocation = "Dynamic"
+        public_ip_address_id          = azurerm_public_ip.ghespublicip.id
+    }
+
+    tags = {
+        environment = "Terraform Demo"
+    }
+}
+
+resource "azurerm_virtual_machine" "main" {
+  name                  = "ghes-vm"
+  location              = "germanywestcentral"
+  resource_group_name   = azurerm_resource_group.myterraformgroup.name
+  network_interface_ids = [azurerm_network_interface.ghesnic.id]
+  vm_size               = "Standard_DS11_v2"
+
+  storage_image_reference {
+    publisher = "GitHub"
+    offer     = "GitHub-Enterprise"
+    sku       = "GitHub-Enterprise"
+    version   = var.ghes-version
+  }
+
+  storage_os_disk {
+    name              = "${var.prefix}-os-storage"
+    caching           = "ReadWrite"
+    create_option     = "FromImage"
+    managed_disk_type = "Premium_LRS"
+    disk_size_gb      = "200"
+  }
+
+  os_profile {
+    computer_name  = "hostname"
+    admin_username = "testadmin"
+  }
+
+#  os_profile_linux_config {
+#    disable_password_authentication = true
+#    ssh_keys {
+#      path     = "/home/testadmin/.ssh/authorized_keys"
+#      key_data = var.ssh_public_key
+#    }
+ # }
+}
+
+
+
+
 #resource "azurerm_kubernetes_cluster" "example" {
 #  name                = "example-aks1"
 #  location              = "germanywestcentral"
