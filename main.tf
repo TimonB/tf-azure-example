@@ -219,6 +219,25 @@ resource "azurerm_virtual_machine" "main" {
 
 
 
+resource "azurerm_managed_disk" "ghes-data" {
+  name                 = "${local.vm_name}-disk1"
+  location              = "germanywestcentral"
+  resource_group_name   = azurerm_resource_group.myterraformgroup.name
+  storage_account_type = "Standard_LRS"
+  create_option        = "Empty"
+  disk_size_gb         = 50
+}
+
+resource "azurerm_virtual_machine_data_disk_attachment" "example" {
+  managed_disk_id    = azurerm_managed_disk.ghes-data.id
+  virtual_machine_id = azurerm_virtual_machine.main.id
+  lun                = "10"
+  caching            = "ReadWrite"
+}
+
+
+
+
 #resource "azurerm_kubernetes_cluster" "example" {
 #  name                = "example-aks1"
 #  location              = "germanywestcentral"
