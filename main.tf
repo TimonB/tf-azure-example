@@ -233,7 +233,7 @@ resource "azurerm_virtual_machine_data_disk_attachment" "example" {
 }
 
 output "public_ip" {
-  value       = azurerm_public_ip.main.ip_address
+  value       = azurerm_public_ip.ghespublicip.ip_address
   description = "The IP address of the GitHub Enterprise Server instance"
 }
 
