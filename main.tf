@@ -11,6 +11,14 @@ provider "azurerm" {
   features {}
 }
 
+
+
+variable "ghes-version" {
+  type    = string
+  default = "3.3.0"
+}
+
+
 # Create a resource group if it doesn't exist
 resource "azurerm_resource_group" "myterraformgroup" {
     name     = "myResourceGroup"
@@ -181,7 +189,7 @@ resource "azurerm_virtual_machine" "main" {
   }
 
   storage_os_disk {
-    name              = "${var.prefix}-os-storage"
+    name              = "ghes-os-storage"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Premium_LRS"
@@ -199,7 +207,7 @@ resource "azurerm_virtual_machine" "main" {
 #      path     = "/home/testadmin/.ssh/authorized_keys"
 #      key_data = var.ssh_public_key
 #    }
- # }
+# }
 }
 
 
