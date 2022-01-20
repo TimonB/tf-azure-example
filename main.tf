@@ -204,13 +204,13 @@ resource "azurerm_virtual_machine" "main" {
 
   os_profile {
     computer_name  = "myghes"
-    admin_username = "admin"
+    admin_username = "ghadmin"
   }
 
   os_profile_linux_config {
     disable_password_authentication = true
     ssh_keys {
-      path     = "/home/admin/.ssh/authorized_keys"
+      path     = "/home/ghadmin/.ssh/authorized_keys"
       key_data = var.ssh_public_key
     }
  }
