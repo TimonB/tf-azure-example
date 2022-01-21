@@ -151,7 +151,7 @@ resource "azurerm_linux_virtual_machine" "myterraformvm" {
 
 variable "ghes-version" {
   type    = string
-  default = "3.3.0"
+  default = "3.3.2"
 }
 
 variable "username" {
@@ -170,9 +170,6 @@ resource "azurerm_public_ip" "ghespublicip" {
         environment = "Terraform Demo"
     }
 }
-
-
-
 
 resource "azurerm_network_interface" "ghesnic" {
     name                      = "ghesnic"
