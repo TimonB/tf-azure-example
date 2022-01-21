@@ -202,6 +202,7 @@ resource "azurerm_virtual_machine" "ghes-test" {
   network_interface_ids = [azurerm_network_interface.ghesnic.id]
   vm_size               = "Standard_DS11_v2"
 
+
   # az vm image list --all -f GitHub-Enterprise
   storage_image_reference {
     publisher = "GitHub"
