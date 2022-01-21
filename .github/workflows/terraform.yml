@@ -83,4 +83,4 @@ jobs:
       run: terraform plan -no-color
 
     - id: apply
-      run: terraform applya
+      run: terraform apply -auto-approve
