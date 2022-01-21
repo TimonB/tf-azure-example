@@ -254,33 +254,37 @@ resource "azurerm_virtual_machine_data_disk_attachment" "example" {
 #}
 #
 #
-#resource "azurerm_kubernetes_cluster" "example" {
-#  name                = "example-aks1"
-#  location              = "germanywestcentral"
-#   resource_group_name   = azurerm_resource_group.myterraformgroup.name
-#  dns_prefix          = "exampleaks1"
-#
-#  default_node_pool {
-#    name       = "default"
-#    node_count = 1
-#    vm_size    = "Standard_D2_v2"
-#  }
-#
-#  identity {
-#    type = "SystemAssigned"
-#  }
-#
-#  tags = {
-#    Environment = "Production"
-#  }
-#}
-#
-#output "client_certificate" {
-#  value = azurerm_kubernetes_cluster.example.kube_config.0.client_certificate
-#}
-#
-#output "kube_config" {
-#  value = azurerm_kubernetes_cluster.example.kube_config_raw
-#
-#  sensitive = true
-#}
+resource "azurerm_kubernetes_cluster" "example" {
+  name                = "example-aks1"
+  location              = "germanywestcentral"
+   resource_group_name   = azurerm_resource_group.myterraformgroup.name
+  dns_prefix          = "exampleaks1"
+
+  default_node_pool {
+    name       = "default"
+    node_count = 1
+    vm_size    = "Standard_D2_v2"
+  }
+
+  identity {
+    type = "SystemAssigned"
+  }
+
+  tags = {
+    Environment = "Production"
+  }
+}
+resource "azurerm_kubernetes_cluster_node_pool" "example" {
+  name                  = "spot"
+  kubernetes_cluster_id = azurerm_kubernetes_cluster.example.id
+  vm_size               = "Standard_DS2_v2"
+  node_count            = 1
+  priority              = "Spot"
+  eviction_policy       = "Delete"
+  spot_max_price        = 0.5 # note: this is the "maximum" price
+  node_labels = {
+    "kubernetes.azure.com/scalesetpriority" = "spot"
+  }
+  node_taints = [
+    "kubernetes.azure.com/scalesetpriority=spot:NoSchedule"
+  ]
