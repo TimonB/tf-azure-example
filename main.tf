@@ -258,12 +258,15 @@ resource "azurerm_kubernetes_cluster" "example" {
   name                = "example-aks1"
   location              = "germanywestcentral"
    resource_group_name   = azurerm_resource_group.myterraformgroup.name
-  dns_prefix          = "exampleaks1"
+  dns_prefix             = "exampleaks1"
 
   default_node_pool {
     name       = "default"
     node_count = 1
     vm_size    = "Standard_D2_v2"
+    node_labels = {
+    "rootuser.net/performancelevel" = "slow"
+  }
   }
 
   identity {
@@ -273,6 +276,31 @@ resource "azurerm_kubernetes_cluster" "example" {
   tags = {
     Environment = "Production"
   }
+
+
+
+  addon_profile {
+    aci_connector_linux {
+      enabled = false
+    }
+
+    azure_policy {
+      enabled = false
+    }
+
+    http_application_routing {
+      enabled = false
+    }
+
+    kube_dashboard {
+      enabled = true
+    }
+
+    oms_agent {
+      enabled = false
+    }
+  }
+
 }
 resource "azurerm_kubernetes_cluster_node_pool" "example" {
   name                  = "spot"
