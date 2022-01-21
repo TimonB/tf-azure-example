@@ -82,5 +82,5 @@ jobs:
     - id: plan
       run: terraform plan -no-color
 
-    - id: plan
+    - id: apply
       run: terraform applya
