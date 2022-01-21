@@ -1,5 +1,12 @@
 # Configure the Microsoft Azure Provider
 terraform {
+    
+  backend "azurerm" {
+    resource_group_name  = "tamopstfstates"
+    storage_account_name = "opstf"
+    container_name       = "terraformgithubexample"
+    key                  = "terraformgithubexample.tfstate"
+  }    
   required_providers {
     azurerm = {
       source = "hashicorp/azurerm"
