@@ -288,3 +288,4 @@ resource "azurerm_kubernetes_cluster_node_pool" "example" {
   node_taints = [
     "kubernetes.azure.com/scalesetpriority=spot:NoSchedule"
   ]
+}
