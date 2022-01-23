@@ -40,6 +40,14 @@ resource "azurerm_dns_zone" "example-public" {
   resource_group_name = azurerm_resource_group.myterraformgroup.name
 }
 
+resource "azurerm_dns_a_record" "example" {
+  name                = "test"
+  zone_name           = azurerm_dns_zone.example-public.name
+  resource_group_name = azurerm_resource_group.myterraformgroup.name
+  ttl                 = 300
+  records             = ["20.82.11.13"]
+}
+
 
 # Create virtual network
 resource "azurerm_virtual_network" "myterraformnetwork" {
