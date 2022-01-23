@@ -81,6 +81,15 @@ resource "azurerm_public_ip" "myterraformpublicip" {
     }
 }
 
+resource "azurerm_dns_a_record" "myvm" {
+  name                = "vm01"
+  zone_name           = azurerm_dns_zone.example-public.name
+  resource_group_name = azurerm_resource_group.myterraformgroup.name
+  ttl                 = 300
+  target_resource_id  = azurerm_public_ip.myterraformpublicip.id
+}
+
+
 # Create Network Security Group and rule
 resource "azurerm_network_security_group" "myterraformnsg" {
     name                = "myNetworkSecurityGroup"
