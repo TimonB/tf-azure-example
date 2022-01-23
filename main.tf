@@ -35,6 +35,12 @@ resource "azurerm_resource_group" "myterraformgroup" {
     }
 }
 
+resource "azurerm_dns_zone" "example-public" {
+  name                = "azure.birk.cloud"
+  resource_group_name = azurerm_resource_group.myterraformgroup.name
+}
+
+
 # Create virtual network
 resource "azurerm_virtual_network" "myterraformnetwork" {
     name                = "myVnet"
