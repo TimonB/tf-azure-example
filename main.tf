@@ -144,7 +144,7 @@ resource "azurerm_linux_virtual_machine" "myterraformvm" {
     location              = "germanywestcentral"
     resource_group_name   = azurerm_resource_group.myterraformgroup.name
     network_interface_ids = [azurerm_network_interface.myterraformnic.id]
-    size                  = "Standard_DS1_v2"
+    size                  = "Standard_D1_v2"
 
     os_disk {
         name              = "myOsDisk"
@@ -286,7 +286,7 @@ resource "azurerm_kubernetes_cluster" "example" {
   default_node_pool {
     name       = "default"
     node_count = 1
-    vm_size    = "Standard_DS2_v2"
+    vm_size    = "Standard_D2_v2"
     node_labels = {
     "rootuser.net/performancelevel" = "slow"
   }
@@ -324,7 +324,7 @@ resource "azurerm_kubernetes_cluster" "example" {
 resource "azurerm_kubernetes_cluster_node_pool" "example" {
   name                  = "spot"
   kubernetes_cluster_id = azurerm_kubernetes_cluster.example.id
-  vm_size               = "Standard_DS2_v2"
+  vm_size               = "Standard_D2_v2"
   node_count            = 1
   priority              = "Spot"
   eviction_policy       = "Delete"
