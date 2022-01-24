@@ -19,16 +19,10 @@ provider "azurerm" {
 }
 
 
-variable "ssh_public_key" {
-  type    = string
-  default = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC+FkIaSUP3ixaVIV8vdJrzQpdMYpTAT0rBhRa6mZ/lC1r/+mxhvasde5VgJ8tecRyhsP4OBBD8ZfDtm4g1pgM1AqxMgK9t7Xf5nJ7gLsa4RxkSz0vGtyNzD4QXjftuiE/GsZdQy/uybwxi9WYEG26tE7a0bCvv4/8HCb1em3dn6OUSEyNYpsB3YTjUybNn2j8kRznF8shrFI9oYu8TRQFT4WLzEnGPxlzqoYgGGKXqsvxvoXsvRj0eOw0lcLSWpS3j5rdEtQGhpq/HASBJ/0+T4Fbo0HhCfzFFVhWfA/uxKKx0ju5HHpOCys2MDuJTqnPRJVgNdliRzlCHtEnGPQJsuPCMCjIjIwgzleApF1nrvgdbUdR1R14ehcCfFIX+0BKe81Ug51ihhWgWh5dCK9U0ubA/sn9Ye2dPPt35wVkG8wgDSwk6fG72ibft774bux0a33/WYTuHdxbFgsynYC3o6Lj32Dm7xuR+bydaNXuEqFDONU0r+Cmlrdkqi8mLxo7PvlQHxZQTDvlLGdKhJJQQjXofdg4kZULIR5ZLt/ViukcjAH5S+WrgWPocHXke52jr4VUUTEY+1wkJzFYIx4yJ3HdXMRFGiaemlBQkXgCPDIgT007/D9lwBBh/kn6tYBBrx53PG77Lz/IE0oDF13DBp2RNuEEsO0Nf2wgCB1i10Q== tbirk@MacBook-Pro-von-Birk.local"
-}
-
-
 # Create a resource group if it doesn't exist
 resource "azurerm_resource_group" "myterraformgroup" {
-    name     = "myResourceGroup"
-    location = "germanywestcentral"
+    name     = var.resource_group_name
+    location = var.location
 
     tags = {
         environment = "Terraform Demo"
@@ -53,7 +47,7 @@ resource "azurerm_dns_a_record" "example" {
 resource "azurerm_virtual_network" "myterraformnetwork" {
     name                = "myVnet"
     address_space       = ["10.0.0.0/16"]
-    location            = "germanywestcentral"
+    location            = var.location
     resource_group_name = azurerm_resource_group.myterraformgroup.name
 
     tags = {
@@ -72,7 +66,7 @@ resource "azurerm_subnet" "myterraformsubnet" {
 # Create public IPs
 resource "azurerm_public_ip" "myterraformpublicip" {
     name                         = "myPublicIP"
-    location                     = "germanywestcentral"
+    location                     = var.location
     resource_group_name          = azurerm_resource_group.myterraformgroup.name
     allocation_method            = "Dynamic"
 
@@ -93,7 +87,7 @@ resource "azurerm_dns_a_record" "myvm" {
 # Create Network Security Group and rule
 resource "azurerm_network_security_group" "myterraformnsg" {
     name                = "myNetworkSecurityGroup"
-    location            = "germanywestcentral"
+    location            = var.location
     resource_group_name = azurerm_resource_group.myterraformgroup.name
 
     security_rule {
@@ -116,7 +110,7 @@ resource "azurerm_network_security_group" "myterraformnsg" {
 # Create network interface
 resource "azurerm_network_interface" "myterraformnic" {
     name                      = "myNIC"
-    location                  = "germanywestcentral"
+    location                  = var.location
     resource_group_name       = azurerm_resource_group.myterraformgroup.name
 
     ip_configuration {
@@ -141,7 +135,7 @@ resource "azurerm_network_interface_security_group_association" "example" {
 # Create virtual machine
 resource "azurerm_linux_virtual_machine" "myterraformvm" {
     name                  = "myVM"
-    location              = "germanywestcentral"
+    location              = var.location
     resource_group_name   = azurerm_resource_group.myterraformgroup.name
     network_interface_ids = [azurerm_network_interface.myterraformnic.id]
     size                  = "Standard_D1_v2"
@@ -192,7 +186,7 @@ resource "azurerm_linux_virtual_machine" "myterraformvm" {
 ## Create public IPs
 #resource "azurerm_public_ip" "ghespublicip" {
 #    name                         = "ghesPublicIP"
-#    location                     = "germanywestcentral"
+#    location               = var.location
 #    resource_group_name          = azurerm_resource_group.myterraformgroup.name
 #    allocation_method            = "Dynamic"
 #
@@ -203,7 +197,7 @@ resource "azurerm_linux_virtual_machine" "myterraformvm" {
 #
 #resource "azurerm_network_interface" "ghesnic" {
 #    name                      = "ghesnic"
-#    location                  = "germanywestcentral"
+#      location               = var.location
 #    resource_group_name       = azurerm_resource_group.myterraformgroup.name
 #
 #    ip_configuration {
@@ -220,7 +214,7 @@ resource "azurerm_linux_virtual_machine" "myterraformvm" {
 ##
 #resource "azurerm_virtual_machine" "ghes-test" {
 #  name                  = "ghes-vm"
-#  location              = "germanywestcentral"
+#    location               = var.location
 #  resource_group_name   = azurerm_resource_group.myterraformgroup.name
 #  network_interface_ids = [azurerm_network_interface.ghesnic.id]
 #  vm_size               = "Standard_DS11_v2"
@@ -258,7 +252,7 @@ resource "azurerm_linux_virtual_machine" "myterraformvm" {
 #
 #resource "azurerm_managed_disk" "ghes-data" {
 #  name                 = "ghes-disk1"
-#  location              = "germanywestcentral"
+#    location               = var.location
 #  resource_group_name   = azurerm_resource_group.myterraformgroup.name
 #  storage_account_type = "Standard_LRS"
 #  create_option        = "Empty"
@@ -278,9 +272,9 @@ resource "azurerm_linux_virtual_machine" "myterraformvm" {
 #
 #
 resource "azurerm_kubernetes_cluster" "example" {
-  name                = "example-aks1"
-  location              = "germanywestcentral"
-   resource_group_name   = azurerm_resource_group.myterraformgroup.name
+  name                   = "example-aks1"
+  location               = var.location
+  resource_group_name    = azurerm_resource_group.myterraformgroup.name
   dns_prefix             = "exampleaks1"
 
   default_node_pool {
@@ -289,7 +283,7 @@ resource "azurerm_kubernetes_cluster" "example" {
     vm_size    = "Standard_D2_v2"
     node_labels = {
     "rootuser.net/performancelevel" = "slow"
-  }
+    }
   }
 
   identity {
