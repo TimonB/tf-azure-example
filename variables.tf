@@ -12,3 +12,8 @@ variable "location" {
   description = "Location of the cluster."
   default     = "germanywestcentral"
 }
+
+variable "environment" {
+  description = "Environment"
+  default     = "development"
+}
