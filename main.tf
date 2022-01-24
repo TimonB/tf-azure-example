@@ -77,7 +77,7 @@ resource "azurerm_public_ip" "myterraformpublicip" {
   allocation_method   = "Dynamic"
 
   tags = {
-    environment = "Terraform Demo"
+    environment = var.environment
   }
 }
 
@@ -109,7 +109,7 @@ resource "azurerm_network_security_group" "myterraformnsg" {
   }
 
   tags = {
-    environment = "Terraform Demo"
+    environment = var.environment
   }
 }
 
@@ -127,7 +127,7 @@ resource "azurerm_network_interface" "myterraformnic" {
   }
 
   tags = {
-    environment = "Terraform Demo"
+    environment = var.environment
   }
 }
 
@@ -169,7 +169,7 @@ resource "azurerm_linux_virtual_machine" "myterraformvm" {
   }
 
   tags = {
-    environment = "Terraform Demo"
+    environment = var.environment
   }
 }
 
@@ -297,7 +297,7 @@ resource "azurerm_kubernetes_cluster" "example" {
   }
 
   tags = {
-    Environment = "Production"
+    environment = var.environment
   }
 
 
@@ -335,4 +335,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "example" {
   node_taints = [
     "kubernetes.azure.com/scalesetpriority=spot:NoSchedule"
   ]
+  tags = {
+    environment = var.environment
+  }
 }
