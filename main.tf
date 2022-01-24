@@ -146,11 +146,11 @@ resource "azurerm_linux_virtual_machine" "myterraformvm" {
     network_interface_ids = [azurerm_network_interface.myterraformnic.id]
     size                  = "Standard_D1_v2"
 
-#    os_disk {
-#        name              = "myOsDisk"
-#        caching           = "ReadWrite"
-#        storage_account_type = "Premium_LRS"
-#    }
+    os_disk {
+        name              = "myOsDisk"
+        caching           = "ReadWrite"
+        storage_account_type = "Standard_LRS"
+    }
 
     source_image_reference {
         publisher = "Canonical"
