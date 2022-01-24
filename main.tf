@@ -328,7 +328,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "example" {
   node_count            = 1
   priority              = "Spot"
   eviction_policy       = "Delete"
-  spot_max_price        = 0.5 # note: this is the "maximum" price
+  spot_max_price        = 0.1 # note: this is the "maximum" price
   node_labels = {
     "kubernetes.azure.com/scalesetpriority" = "spot"
   }
