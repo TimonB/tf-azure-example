@@ -3,8 +3,6 @@
 #
 #
 
-
-
 # Create public IPs
 resource "azurerm_public_ip" "ghespublicip" {
   name                = "ghesPublicIP"
@@ -100,4 +98,29 @@ resource "azurerm_dns_a_record" "ghes-dns" {
   resource_group_name = azurerm_resource_group.myterraformgroup.name
   ttl                 = 300
   target_resource_id  = azurerm_public_ip.ghespublicip.id
+}
+
+
+#
+# Storage for GHES
+# Needed as stroage backend for artifacts and github actions 
+#
+resource "azurerm_storage_account" "main" {
+  name                     = "ghes-storageaccount"
+  resource_group_name      = azurerm_resource_group.myterraformgroup.name
+  location                 = var.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+}
+
+resource "azurerm_storage_container" "main" {
+  name                  = "ghes-content"
+  storage_account_name  = azurerm_storage_account.main.name
+  container_access_type = "private"
+}
+
+
+output "connection_string" {
+  description = "Storage Account Connection String"
+  value       = azurerm_storage_account.main.primary_connection_string
 }
