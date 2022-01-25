@@ -135,14 +135,8 @@ resource "azurerm_dns_a_record" "ghes-dns" {
 # https://docs.github.com/en/enterprise-server@3.3/admin/packages/enabling-github-packages-with-azure-blob-storage
 #
 
-
-#
-# Storage for GHES - GitHub Actions
-# Needed as stroage backend or GitHub Actions: 
-# https://docs.github.com/en/enterprise-server@3.3/admin/github-actions/enabling-github-actions-for-github-enterprise-server/enabling-github-actions-with-azure-blob-storage
-#
-resource "azurerm_storage_account" "main" {
-  name                     = "ghesstorageaccount"
+resource "azurerm_storage_account" "ghesstorageaccountrepo" {
+  name                     = "ghesstorageaccountrepo"
   resource_group_name      = azurerm_resource_group.myterraformgroup.name
   location                 = var.location
   account_tier             = "Standard"
@@ -150,14 +144,38 @@ resource "azurerm_storage_account" "main" {
 }
 
 resource "azurerm_storage_container" "main" {
-  name                  = "ghescontent"
-  storage_account_name  = azurerm_storage_account.main.name
+  name                  = "ghesrepos"
+  storage_account_name  = azurerm_storage_account.ghesstorageaccountrepo.name
   container_access_type = "private"
 }
 
 
-output "connection_string" {
-  description = "Storage Account Connection String"
-  value       = nonsensitive(azurerm_storage_account.main.primary_connection_string)
+#
+# Storage for GHES - GitHub Actions
+# Needed as stroage backend or GitHub Actions: 
+# https://docs.github.com/en/enterprise-server@3.3/admin/github-actions/enabling-github-actions-for-github-enterprise-server/enabling-github-actions-with-azure-blob-storage
+#
+resource "azurerm_storage_account" "ghesstorageaccountaction" {
+  name                     = "ghesstorageaccountaction"
+  resource_group_name      = azurerm_resource_group.myterraformgroup.name
+  location                 = var.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+}
 
+resource "azurerm_storage_container" "main" {
+  name                  = "ghesactions"
+  storage_account_name  = azurerm_storage_account.ghesstorageaccountaction.name
+  container_access_type = "private"
+}
+
+
+output "connection_string_actions" {
+  description = "Storage Account Connection String for Actions"
+  value       = nonsensitive(azurerm_storage_account.ghesstorageaccountaction.primary_connection_string)
+}
+
+output "connection_string_repos" {
+  description = "Storage Account Connection String for Repository Storage"
+  value       = nonsensitive(azurerm_storage_account.ghesstorageaccountrepo.primary_connection_string)
 }
