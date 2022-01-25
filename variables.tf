@@ -17,3 +17,13 @@ variable "environment" {
   description = "Environment"
   default     = "development"
 }
+
+variable "ghes-version" {
+  type    = string
+  default = "3.3.2"
+}
+
+variable "username" {
+  type    = string
+  default = "ghadmin"
+}
