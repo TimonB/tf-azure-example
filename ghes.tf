@@ -143,7 +143,7 @@ resource "azurerm_storage_account" "ghesstorageaccountrepo" {
   account_replication_type = "LRS"
 }
 
-resource "azurerm_storage_container" "main" {
+resource "azurerm_storage_container" "ghesrepos" {
   name                  = "ghesrepos"
   storage_account_name  = azurerm_storage_account.ghesstorageaccountrepo.name
   container_access_type = "private"
@@ -163,7 +163,7 @@ resource "azurerm_storage_account" "ghesstorageaccountaction" {
   account_replication_type = "LRS"
 }
 
-resource "azurerm_storage_container" "main" {
+resource "azurerm_storage_container" "ghesactions" {
   name                  = "ghesactions"
   storage_account_name  = azurerm_storage_account.ghesstorageaccountaction.name
   container_access_type = "private"
