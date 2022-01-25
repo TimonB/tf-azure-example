@@ -123,5 +123,5 @@ resource "azurerm_storage_container" "main" {
 output "connection_string" {
   description = "Storage Account Connection String"
   value       = nonsensitive(azurerm_storage_account.main.primary_connection_string)
-  sensitive   = true
+
 }
