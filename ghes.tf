@@ -96,7 +96,7 @@ output "public_ip" {
 
 resource "azurerm_dns_a_record" "ghes-dns" {
   name                = "github"
-  zone_name           = azurerm_dns_zone.azurerm_dns_zone.example-public.name
+  zone_name           = azurerm_dns_zone.example-public.name
   resource_group_name = azurerm_resource_group.myterraformgroup.name
   ttl                 = 300
   target_resource_id  = azurerm_public_ip.ghespublicip.id
