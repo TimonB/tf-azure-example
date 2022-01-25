@@ -106,7 +106,7 @@ resource "azurerm_dns_a_record" "ghes-dns" {
 # Needed as stroage backend for artifacts and github actions 
 #
 resource "azurerm_storage_account" "main" {
-  name                     = "ghes-storageaccount"
+  name                     = "ghesstorageaccount"
   resource_group_name      = azurerm_resource_group.myterraformgroup.name
   location                 = var.location
   account_tier             = "Standard"
@@ -114,7 +114,7 @@ resource "azurerm_storage_account" "main" {
 }
 
 resource "azurerm_storage_container" "main" {
-  name                  = "ghes-content"
+  name                  = "ghescontent"
   storage_account_name  = azurerm_storage_account.main.name
   container_access_type = "private"
 }
