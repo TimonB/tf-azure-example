@@ -15,7 +15,7 @@ resource "azurerm_public_ip" "ghespublicip" {
   }
 }
 
-
+# Add security rules
 resource "azurerm_network_security_group" "ghessecgroup" {
   name                = "ghes-security-group"
   location            = var.location
@@ -114,11 +114,9 @@ resource "azurerm_virtual_machine_data_disk_attachment" "example" {
 }
 
 
-output "public_ip" {
-  value       = azurerm_public_ip.ghespublicip.ip_address
-  description = "The IP address of the GitHub Enterprise Server instance"
-}
-
+#
+# Add DNS Record for GHES
+#
 
 resource "azurerm_dns_a_record" "ghes-dns" {
   name                = "github"
@@ -155,6 +153,7 @@ resource "azurerm_storage_container" "ghesrepos" {
 # Needed as stroage backend or GitHub Actions: 
 # https://docs.github.com/en/enterprise-server@3.3/admin/github-actions/enabling-github-actions-for-github-enterprise-server/enabling-github-actions-with-azure-blob-storage
 #
+
 resource "azurerm_storage_account" "ghesstorageaccountaction" {
   name                     = "ghesstorageaccountaction"
   resource_group_name      = azurerm_resource_group.myterraformgroup.name
@@ -170,12 +169,3 @@ resource "azurerm_storage_container" "ghesactions" {
 }
 
 
-output "connection_string_actions" {
-  description = "Storage Account Connection String for Actions"
-  value       = nonsensitive(azurerm_storage_account.ghesstorageaccountaction.primary_connection_string)
-}
-
-output "connection_string_repos" {
-  description = "Storage Account Connection String for Repository Storage"
-  value       = nonsensitive(azurerm_storage_account.ghesstorageaccountrepo.primary_connection_string)
-}
