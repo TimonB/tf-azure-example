@@ -130,8 +130,15 @@ resource "azurerm_dns_a_record" "ghes-dns" {
 
 
 #
-# Storage for GHES
-# Needed as stroage backend or github actions: 
+# Storage for GHES - Repository
+# Needed as stroage backend or GitHub Actions: 
+# https://docs.github.com/en/enterprise-server@3.3/admin/packages/enabling-github-packages-with-azure-blob-storage
+#
+
+
+#
+# Storage for GHES - GitHub Actions
+# Needed as stroage backend or GitHub Actions: 
 # https://docs.github.com/en/enterprise-server@3.3/admin/github-actions/enabling-github-actions-for-github-enterprise-server/enabling-github-actions-with-azure-blob-storage
 #
 resource "azurerm_storage_account" "main" {
