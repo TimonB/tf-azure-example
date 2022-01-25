@@ -11,9 +11,31 @@ resource "azurerm_public_ip" "ghespublicip" {
   allocation_method   = "Dynamic"
 
   tags = {
-    version = var.ghes-version
+    version = var.environment
   }
 }
+
+
+resource "azurerm_network_security_group" "ghessecgroup" {
+  name                = "ghes-security-group"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.myterraformgroup.name
+}
+
+resource "azurerm_network_security_rule" "ghes-secrules" {
+  name                        = "ghes-security-rules"
+  priority                    = 100
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  destination_port_ranges     = ["22", "25", "80", "122", "443", "8080", "8443", "9418"]
+  source_port_range           = "*"
+  source_address_prefix       = "*"
+  destination_address_prefix  = "*"
+  resource_group_name         = azurerm_resource_group.myterraformgroup.name
+  network_security_group_name = azurerm_network_security_group.ghessecgroup.name
+}
+
 
 resource "azurerm_network_interface" "ghesnic" {
   name                = "ghesnic"
@@ -28,8 +50,14 @@ resource "azurerm_network_interface" "ghesnic" {
   }
 
   tags = {
-    version = var.ghes-version
+    version = var.environment
   }
+}
+
+## Connect the security group to the network interface
+resource "azurerm_network_interface_security_group_association" "ghes-sec-assoc" {
+  network_interface_id      = azurerm_network_interface.ghesnic.id
+  network_security_group_id = azurerm_network_security_group.ghessecgroup.id
 }
 
 resource "azurerm_virtual_machine" "ghes-test" {
@@ -103,7 +131,8 @@ resource "azurerm_dns_a_record" "ghes-dns" {
 
 #
 # Storage for GHES
-# Needed as stroage backend for artifacts and github actions 
+# Needed as stroage backend or github actions: 
+# https://docs.github.com/en/enterprise-server@3.3/admin/github-actions/enabling-github-actions-for-github-enterprise-server/enabling-github-actions-with-azure-blob-storage
 #
 resource "azurerm_storage_account" "main" {
   name                     = "ghesstorageaccount"
