@@ -1,12 +1,15 @@
 # AKS Kubernetes
 # Examples see https://github.com/hashicorp/terraform-provider-azurerm/tree/main/examples/kubernetes
 
+
 resource "azurerm_kubernetes_cluster" "dev-k8s" {
   name                = "dev-aks"
   location            = var.location
   resource_group_name = azurerm_resource_group.myterraformgroup.name
   dns_prefix          = "dev-aks"
-
+# Get available aks versions and possbible upgrade:
+# az aks get-versions --location germanywestcentral  --output table
+  kubernetes_version = "1.21.7"
   default_node_pool {
     name           = "default"
     node_count     = 1
