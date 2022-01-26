@@ -74,6 +74,14 @@ resource "azurerm_subnet" "myterraformsubnet" {
 
 
 
+resource "azurerm_subnet" "k8s" {
+  name                 = "k8s"
+  resource_group_name  = azurerm_resource_group.myterraformgroup.name
+  virtual_network_name = azurerm_virtual_network.myterraformnetwork.name
+  address_prefixes     = ["10.0.2.0/24"]
+}
+
+
 #
 # VM Creation
 #
@@ -211,7 +219,7 @@ resource "azurerm_subnet" "myterraformsubnet" {
 #  identity {
 #    type = "SystemAssigned"
 #  }
-#
+#comm
 #  tags = {
 #    environment = var.environment
 #  }
