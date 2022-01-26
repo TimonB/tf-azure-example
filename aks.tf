@@ -7,11 +7,18 @@ resource "azurerm_kubernetes_cluster" "dev-k8s" {
   resource_group_name = azurerm_resource_group.myterraformgroup.name
   dns_prefix          = "dev-aks"
 
+
+#    --docker-bridge-address 172.17.0.1/16 \
+#    --dns-service-ip 10.2.0.10 \
+#    --service-cidr 10.2.0.0/24 \
+
+
+
   default_node_pool {
     name           = "default"
     node_count     = 1
     vm_size        = "Standard_D2_v2"
-    vnet_subnet_id = azurerm_subnet.k8s.id
+#    vnet_subnet_id = azurerm_subnet.k8s.id
     node_labels = {
       "rootuser.net/performancelevel" = "slow"
     }
@@ -24,6 +31,12 @@ resource "azurerm_kubernetes_cluster" "dev-k8s" {
   network_profile {
     network_plugin    = "azure"
     load_balancer_sku = "Standard"
+    service_cidr = "10.2.0.0/24"
+
+#    pod_cidr - The CIDR used for pod IP addresses.
+
+ #   service_cidr - Network range used by the Kubernetes service.
+
   }
 
   tags = {
