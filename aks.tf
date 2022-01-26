@@ -6,7 +6,7 @@ resource "azurerm_kubernetes_cluster" "dev-k8s" {
   location            = var.location
   resource_group_name = azurerm_resource_group.myterraformgroup.name
   dns_prefix          = "dev-aks"
-  # Get available aks versions and possbible upgrade:
+  # Get available aks versions and possbible upgrades:
   # az aks get-versions --location germanywestcentral  --output table
   kubernetes_version = "1.22.2"
   default_node_pool {
@@ -37,7 +37,6 @@ resource "azurerm_kubernetes_cluster" "dev-k8s" {
     environment = var.environment
   }
 }
-
 
 resource "azurerm_kubernetes_cluster_node_pool" "windows-nodepool" {
   name                  = "win"
