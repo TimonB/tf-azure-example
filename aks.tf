@@ -8,7 +8,7 @@ resource "azurerm_kubernetes_cluster" "dev-k8s" {
   dns_prefix          = "dev-aks"
   # Get available aks versions and possbible upgrade:
   # az aks get-versions --location germanywestcentral  --output table
-  kubernetes_version = "1.21.7"
+  kubernetes_version = "1.22.2"
   default_node_pool {
     name           = "default"
     node_count     = 1
