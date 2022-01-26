@@ -20,33 +20,34 @@ resource "azurerm_kubernetes_cluster" "dev-k8s" {
     type = "SystemAssigned"
   }
 
-  tags = {
-    environment = var.environment
-  }
-
   network_profile {
     network_plugin    = "kubenet"
     load_balancer_sku = "Standard"
   }
 
+  tags = {
+    environment = var.environment
+  }
 }
 
 
-#resource "azurerm_kubernetes_cluster_node_pool" "example" {
-#  name                  = "spot"
-#  kubernetes_cluster_id = azurerm_kubernetes_cluster.example.id
-#  vm_size               = "Standard_D2_v2"
-#  node_count            = 1
-#  priority              = "Spot"
-#  eviction_policy       = "Delete"
-#  spot_max_price        = 0.1 # note: this is the "maximum" price
-#  node_labels = {
-#    "kubernetes.azure.com/scalesetpriority" = "spot"
-#  }
-#  node_taints = [
-#    "kubernetes.azure.com/scalesetpriority=spot:NoSchedule"
-#  ]
-#  tags = {
-#    environment = var.environment
-#  }
-#}
+resource "azurerm_kubernetes_cluster_node_pool" "windows-nodepool" {
+  name                  = "windows-pool"
+  kubernetes_cluster_id = azurerm_kubernetes_cluster.example.id
+  vm_size               = "Standard_D2_v2"
+  os_type               = Windows
+  node_count            = 1
+  priority              = "Spot"
+  eviction_policy       = "Delete"
+  #  spot_max_price        = 0.1 # note: this is the "maximum" price
+  node_labels = {
+    "kubernetes.azure.com/scalesetpriority" = "spot"
+    "rootuser.net/os"                       = "windows"
+  }
+  node_taints = [
+    "kubernetes.azure.com/scalesetpriority=spot:NoSchedule"
+  ]
+  tags = {
+    environment = var.environment
+  }
+}

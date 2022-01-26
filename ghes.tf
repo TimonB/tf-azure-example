@@ -8,7 +8,7 @@ resource "azurerm_public_ip" "ghespublicip" {
   name                = "ghesPublicIP"
   location            = var.location
   resource_group_name = azurerm_resource_group.myterraformgroup.name
-  allocation_method   = "Dynamic"
+  allocation_method   = "Static"
 
   tags = {
     version = var.environment
@@ -167,5 +167,3 @@ resource "azurerm_storage_container" "ghesactions" {
   storage_account_name  = azurerm_storage_account.ghesstorageaccountaction.name
   container_access_type = "private"
 }
-
-
