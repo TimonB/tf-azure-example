@@ -32,6 +32,9 @@ resource "azurerm_kubernetes_cluster" "dev-k8s" {
     network_plugin    = "azure"
     load_balancer_sku = "Standard"
     service_cidr = "10.2.0.0/24"
+    dns_service_ip = "10.2.0.10"
+    docker_bridge_cidr = "172.17.0.1/16"
+
 
 #    pod_cidr - The CIDR used for pod IP addresses.
 
