@@ -8,9 +8,10 @@ resource "azurerm_kubernetes_cluster" "dev-k8s" {
   dns_prefix          = "dev-aks"
 
   default_node_pool {
-    name       = "default"
-    node_count = 1
-    vm_size    = "Standard_D2_v2"
+    name           = "default"
+    node_count     = 1
+    vm_size        = "Standard_D2_v2"
+    vnet_subnet_id = azurerm_subnet.k8s.id
     node_labels = {
       "rootuser.net/performancelevel" = "slow"
     }
@@ -21,7 +22,7 @@ resource "azurerm_kubernetes_cluster" "dev-k8s" {
   }
 
   network_profile {
-    network_plugin    = "kubenet"
+    network_plugin    = "azure-cni"
     load_balancer_sku = "Standard"
   }
 
@@ -47,6 +48,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "windows-nodepool" {
   node_taints = [
     "kubernetes.azure.com/scalesetpriority=spot:NoSchedule"
   ]
+  vnet_subnet_id = azurerm_subnet.k8s.id
   tags = {
     environment = var.environment
   }
