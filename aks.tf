@@ -14,7 +14,7 @@ resource "azurerm_kubernetes_cluster" "dev-k8s" {
     node_count           = 1
     vm_size              = "Standard_D2_v2"
     vnet_subnet_id       = azurerm_subnet.k8s.id
-    orchestrator_version = "1.21.7"
+    orchestrator_version = "1.22.2"
     node_labels = {
       "rootuser.net/performancelevel" = "slow"
       "rootuser.net/os"               = "linux"
