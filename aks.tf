@@ -33,7 +33,7 @@ resource "azurerm_kubernetes_cluster" "dev-k8s" {
 
 resource "azurerm_kubernetes_cluster_node_pool" "windows-nodepool" {
   name                  = "windows-pool"
-  kubernetes_cluster_id = azurerm_kubernetes_cluster.example.id
+  kubernetes_cluster_id = azurerm_kubernetes_cluster.dev-k8s.id
   vm_size               = "Standard_D2_v2"
   os_type               = Windows
   node_count            = 1
