@@ -10,10 +10,11 @@ resource "azurerm_kubernetes_cluster" "dev-k8s" {
   # az aks get-versions --location germanywestcentral  --output table
   kubernetes_version = "1.22.2"
   default_node_pool {
-    name           = "default"
-    node_count     = 1
-    vm_size        = "Standard_D2_v2"
-    vnet_subnet_id = azurerm_subnet.k8s.id
+    name                 = "default"
+    node_count           = 1
+    vm_size              = "Standard_D2_v2"
+    vnet_subnet_id       = azurerm_subnet.k8s.id
+    orchestrator_version = "1.21.7"
     node_labels = {
       "rootuser.net/performancelevel" = "slow"
       "rootuser.net/os"               = "linux"
@@ -51,9 +52,11 @@ resource "azurerm_kubernetes_cluster_node_pool" "windows-nodepool" {
     "kubernetes.azure.com/scalesetpriority" = "spot"
     "rootuser.net/os"                       = "windows"
   }
-  #  node_taints = [
-  #    "kubernetes.azure.com/scalesetpriority=spot:NoSchedule"
-  #  ]
+
+  orchestrator_version = "1.22.2"
+  node_taints = [
+    "kubernetes.azure.com/scalesetpriority=spot:NoSchedule"
+  ]
   vnet_subnet_id = azurerm_subnet.k8s.id
   tags = {
     environment = var.environment
