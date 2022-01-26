@@ -1,14 +1,13 @@
 # AKS Kubernetes
 # Examples see https://github.com/hashicorp/terraform-provider-azurerm/tree/main/examples/kubernetes
 
-
 resource "azurerm_kubernetes_cluster" "dev-k8s" {
   name                = "dev-aks"
   location            = var.location
   resource_group_name = azurerm_resource_group.myterraformgroup.name
   dns_prefix          = "dev-aks"
-# Get available aks versions and possbible upgrade:
-# az aks get-versions --location germanywestcentral  --output table
+  # Get available aks versions and possbible upgrade:
+  # az aks get-versions --location germanywestcentral  --output table
   kubernetes_version = "1.21.7"
   default_node_pool {
     name           = "default"
@@ -17,6 +16,7 @@ resource "azurerm_kubernetes_cluster" "dev-k8s" {
     vnet_subnet_id = azurerm_subnet.k8s.id
     node_labels = {
       "rootuser.net/performancelevel" = "slow"
+      "rootuser.net/os"               = "linux"
     }
   }
 
@@ -25,10 +25,10 @@ resource "azurerm_kubernetes_cluster" "dev-k8s" {
   }
 
   network_profile {
-    network_plugin    = "azure"
-    load_balancer_sku = "Standard"
-    service_cidr = "10.2.0.0/24"
-    dns_service_ip = "10.2.0.10"
+    network_plugin     = "azure"
+    load_balancer_sku  = "Standard"
+    service_cidr       = "10.2.0.0/24"
+    dns_service_ip     = "10.2.0.10"
     docker_bridge_cidr = "172.17.0.1/16"
   }
 
@@ -51,9 +51,9 @@ resource "azurerm_kubernetes_cluster_node_pool" "windows-nodepool" {
     "kubernetes.azure.com/scalesetpriority" = "spot"
     "rootuser.net/os"                       = "windows"
   }
-  node_taints = [
-    "kubernetes.azure.com/scalesetpriority=spot:NoSchedule"
-  ]
+  #  node_taints = [
+  #    "kubernetes.azure.com/scalesetpriority=spot:NoSchedule"
+  #  ]
   vnet_subnet_id = azurerm_subnet.k8s.id
   tags = {
     environment = var.environment
