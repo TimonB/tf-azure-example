@@ -22,7 +22,7 @@ resource "azurerm_kubernetes_cluster" "dev-k8s" {
   }
 
   network_profile {
-    network_plugin    = "azure-cni"
+    network_plugin    = "azure"
     load_balancer_sku = "Standard"
   }
 
