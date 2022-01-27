@@ -1,6 +1,15 @@
 # AKS Kubernetes
 # Examples see https://github.com/hashicorp/terraform-provider-azurerm/tree/main/examples/kubernetes
 
+
+
+variable "orchestrator_version" {
+  description = "Kubernetes Orchestrator Version"
+  default     = "1.22.2"
+}
+
+
+
 resource "azurerm_kubernetes_cluster" "dev-k8s" {
   name                = "dev-aks"
   location            = var.location
@@ -14,7 +23,7 @@ resource "azurerm_kubernetes_cluster" "dev-k8s" {
     node_count           = 1
     vm_size              = "Standard_D2_v2"
     vnet_subnet_id       = azurerm_subnet.k8s.id
-    orchestrator_version = "1.22.2"
+    orchestrator_version = var.orchestrator_version
     node_labels = {
       "rootuser.net/performancelevel" = "slow"
       "rootuser.net/os"               = "linux"
@@ -38,26 +47,26 @@ resource "azurerm_kubernetes_cluster" "dev-k8s" {
   }
 }
 
-#resource "azurerm_kubernetes_cluster_node_pool" "windows-nodepool" {
-#  name                  = "win"
-#  kubernetes_cluster_id = azurerm_kubernetes_cluster.dev-k8s.id
-#  vm_size               = "Standard_D2_v2"
-#  os_type               = "Windows"
-#  node_count            = 1
-#  priority              = "Spot"
-#  eviction_policy       = "Delete"
-#  #  spot_max_price        = 0.1 # note: this is the "maximum" price
-#  node_labels = {
-#    "kubernetes.azure.com/scalesetpriority" = "spot"
-#    "rootuser.net/os"                       = "windows"
-#  }
-#
-#  orchestrator_version = "1.22.2"
-#  node_taints = [
-#    "kubernetes.azure.com/scalesetpriority=spot:NoSchedule"
-#  ]
-#  vnet_subnet_id = azurerm_subnet.k8s.id
-#  tags = {
-#    environment = var.environment
-#  }
-#}
+resource "azurerm_kubernetes_cluster_node_pool" "windows-nodepool" {
+  name                  = "win"
+  kubernetes_cluster_id = azurerm_kubernetes_cluster.dev-k8s.id
+  vm_size               = "Standard_D2_v2"
+  os_type               = "Windows"
+  node_count            = 1
+  priority              = "Spot"
+  eviction_policy       = "Delete"
+  #  spot_max_price        = 0.1 # note: this is the "maximum" price
+  node_labels = {
+    "kubernetes.azure.com/scalesetpriority" = "spot"
+    "rootuser.net/os"                       = "windows"
+  }
+
+  orchestrator_version = var.orchestrator_version
+  node_taints = [
+    "kubernetes.azure.com/scalesetpriority=spot:NoSchedule"
+  ]
+  vnet_subnet_id = azurerm_subnet.k8s.id
+  tags = {
+    environment = var.environment
+  }
+}

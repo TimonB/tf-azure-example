@@ -3,6 +3,10 @@
 #
 #
 
+ttps://azure.microsoft.com/de-de/pricing/hybrid-benefit/
+
+
+
 # Create public IPs
 resource "azurerm_public_ip" "ghespublicip" {
   name                = "ghesPublicIP"
