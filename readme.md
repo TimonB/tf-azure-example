@@ -1,14 +1,14 @@
 TF-AZURE-EXAMPLE
 ===
 
-Example how to create some resources in Microsoft Azure with Terraform and GitHub Actions.
+Example to create some resources in Microsoft Azure with Terraform and GitHub Actions.
 
 
 # Links
 
 
-[Using Azure Storage for tfstate](https://thomasthornton.cloud/2021/03/19/deploy-terraform-using-github-actions-into-azure/)
-[Terraform Kubernetes Example](https://github.com/hashicorp/terraform-provider-azurerm/tree/main/examples/kubernetes)
+- [Using Azure Storage for tfstate](https://thomasthornton.cloud/2021/03/19/deploy-terraform-using-github-actions-into-azure/)
+- [Terraform Kubernetes Example](https://github.com/hashicorp/terraform-provider-azurerm/tree/main/examples/kubernetes)
 
 
 # Hints
