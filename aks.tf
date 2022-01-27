@@ -1,6 +1,16 @@
 # AKS Kubernetes
 # Examples see https://github.com/hashicorp/terraform-provider-azurerm/tree/main/examples/kubernetes
 
+
+
+# Upgrade Steps...
+# 1. Upgrade Cluster
+#
+#
+#
+#
+
+
 variable "orchestrator_version" {
   description = "Kubernetes Orchestrator Version"
   default     = "1.21.2"
@@ -8,7 +18,7 @@ variable "orchestrator_version" {
 
 variable "kubernetes_cluster_version" {
   description = "Kubernetes Cluster Version"
-  default     = "1.21.2"
+  default     = "1.21.7"
 }
 
 
