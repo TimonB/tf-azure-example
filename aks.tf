@@ -13,7 +13,7 @@
 
 variable "orchestrator_version" {
   description = "Kubernetes Orchestrator Version"
-  default     = "1.21.2"
+  default     = "1.21.7"
 }
 
 variable "kubernetes_cluster_version" {
