@@ -1,13 +1,15 @@
 # AKS Kubernetes
 # Examples see https://github.com/hashicorp/terraform-provider-azurerm/tree/main/examples/kubernetes
 
-
-
 variable "orchestrator_version" {
   description = "Kubernetes Orchestrator Version"
   default     = "1.22.2"
 }
 
+variable "kubernetes_cluster_version" {
+  description = "Kubernetes Cluster Version"
+  default     = "1.22.4"
+}
 
 
 resource "azurerm_kubernetes_cluster" "dev-k8s" {
@@ -17,7 +19,7 @@ resource "azurerm_kubernetes_cluster" "dev-k8s" {
   dns_prefix          = "dev-aks"
   # Get available aks versions and possbible upgrades:
   # az aks get-versions --location germanywestcentral  --output table
-  kubernetes_version = "1.22.2"
+  kubernetes_version = var.kubernetes_cluster_version
   default_node_pool {
     name                 = "default"
     node_count           = 1
