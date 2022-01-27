@@ -3,8 +3,16 @@
 #
 #
 
-ttps://azure.microsoft.com/de-de/pricing/hybrid-benefit/
 
+variable "ghes-version" {
+  type    = string
+  default = "3.3.2"
+}
+
+variable "username" {
+  type    = string
+  default = "ghadmin"
+}
 
 
 # Create public IPs
