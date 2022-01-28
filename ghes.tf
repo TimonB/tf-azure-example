@@ -26,6 +26,7 @@ resource "azurerm_public_ip" "ghespublicip" {
     version = var.environment
   }
 }
+# ToDo: add Loadbalancer
 
 # Add security rules
 resource "azurerm_network_security_group" "ghessecgroup" {
@@ -66,11 +67,14 @@ resource "azurerm_network_interface" "ghesnic" {
   }
 }
 
-## Connect the security group to the network interface
+# Connect the security group to the network interface
 resource "azurerm_network_interface_security_group_association" "ghes-sec-assoc" {
   network_interface_id      = azurerm_network_interface.ghesnic.id
   network_security_group_id = azurerm_network_security_group.ghessecgroup.id
 }
+
+
+
 
 resource "azurerm_virtual_machine" "ghes-test" {
   name                  = "ghes-vm"
@@ -79,7 +83,13 @@ resource "azurerm_virtual_machine" "ghes-test" {
   network_interface_ids = [azurerm_network_interface.ghesnic.id]
   vm_size               = "Standard_DS11_v2"
 
+  # Uncomment this line to delete the OS disk automatically when deleting the VM
+  delete_os_disk_on_termination = true
 
+  # Uncomment this line to delete the data disks automatically when deleting the VM
+  delete_data_disks_on_termination = true
+
+  # Getting the available VM templates
   # az vm image list --all -f GitHub-Enterprise
   storage_image_reference {
     publisher = "GitHub"
