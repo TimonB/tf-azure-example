@@ -86,6 +86,16 @@ resource "azurerm_lb_rule" "ssh-mgmnt" {
   frontend_ip_configuration_name = "publicIPAddress"
 }
 
+resource "azurerm_lb_rule" "sshgit" {
+  resource_group_name            = azurerm_resource_group.myterraformgroup.name
+  loadbalancer_id                = azurerm_lb.ghes-lb.id
+  name                           = "SSHGit"
+  protocol                       = "TCP"
+  frontend_port                  = 22
+  backend_port                   = 22
+  backend_address_pool_ids       = [azurerm_lb_backend_address_pool.ghes-lb-backend.id]
+  frontend_ip_configuration_name = "publicIPAddress"
+}
 
 resource "azurerm_lb_probe" "ssh" {
   resource_group_name = azurerm_resource_group.myterraformgroup.name
