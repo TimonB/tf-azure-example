@@ -168,6 +168,15 @@ resource "azurerm_lb_backend_address_pool" "ghes-lb-backend" {
 
 }
 
+resource "azurerm_lb_probe" "https" {
+  resource_group_name = azurerm_resource_group.myterraformgroup.name
+  loadbalancer_id     = azurerm_lb.ghes-lb.id
+  name                = "https-running-probe"
+  probe_id            = azurerm_lb_probe.https.id
+  port                = 443
+  protocol            = Https
+  request_path        = "/status"
+}
 resource "azurerm_lb_rule" "web" {
   resource_group_name            = azurerm_resource_group.myterraformgroup.name
   loadbalancer_id                = azurerm_lb.ghes-lb.id
