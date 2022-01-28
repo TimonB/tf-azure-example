@@ -6,7 +6,7 @@
 
 variable "ghes-version" {
   type    = string
-  default = "3.3.2"
+  default = "3.0.23"
 }
 
 variable "username" {
