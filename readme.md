@@ -9,7 +9,7 @@ Example to create some resources in Microsoft Azure with Terraform and GitHub Ac
 
 - [Using Azure Storage for tfstate](https://thomasthornton.cloud/2021/03/19/deploy-terraform-using-github-actions-into-azure/)
 - [Terraform Kubernetes Example](https://github.com/hashicorp/terraform-provider-azurerm/tree/main/examples/kubernetes)
-
+- [Terraform Module](https://github.com/orgs/Azure/repositories?language=&q=terraform&sort=&type=all)
 
 # Notes
 

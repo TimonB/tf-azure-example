@@ -20,7 +20,7 @@ output "latest_version" {
 #  value       = nonsensitive(azurerm_storage_account.ghesstorageaccountrepo.primary_connection_string)
 #}
 #
-output "public_ip_ghes" {
-  value       = azurerm_public_ip.ghespublicip.ip_address
-  description = "The ip address of the GitHub Enterprise Server instance"
-}
+#output "public_ip_ghes" {
+#  value       = azurerm_public_ip.ghespublicip.ip_address
+#  description = "The ip address of the GitHub Enterprise Server instance"
+#}
