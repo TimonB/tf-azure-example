@@ -138,7 +138,6 @@ resource "azurerm_virtual_machine_data_disk_attachment" "example" {
 }
 
 
-
 # Add Loadbalancer
 
 resource "azurerm_public_ip" "ghes-lb-public" {
@@ -174,7 +173,7 @@ resource "azurerm_lb_probe" "https" {
   name                = "https-running-probe"
   probe_id            = azurerm_lb_probe.https.id
   port                = 443
-  protocol            = Https
+  protocol            = "Https"
   request_path        = "/status"
 }
 resource "azurerm_lb_rule" "web" {
