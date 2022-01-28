@@ -28,9 +28,10 @@ resource "azurerm_public_ip" "ghespublicip" {
 }
 # ToDo: add Loadbalancer
 
-resource "azurerm_public_ip" "ghes-lb-publicip" {
-  name                = "publicIPForLB"
+resource "azurerm_public_ip" "ghes-lb-public" {
+  name                = "publicIPForGHESLB"
   location            = var.location
+  sku                 = "Standard"
   resource_group_name = azurerm_resource_group.myterraformgroup.name
   allocation_method   = "Static"
 }
@@ -38,11 +39,12 @@ resource "azurerm_public_ip" "ghes-lb-publicip" {
 resource "azurerm_lb" "ghes-lb" {
   name                = "loadBalancer"
   location            = var.location
+  sku                 = "Standard"
   resource_group_name = azurerm_resource_group.myterraformgroup.name
 
   frontend_ip_configuration {
     name                 = "publicIPAddress"
-    public_ip_address_id = azurerm_public_ip.ghes-lb-publicip.id
+    public_ip_address_id = azurerm_public_ip.ghes-lb-public.id
   }
 }
 
@@ -51,6 +53,46 @@ resource "azurerm_lb_backend_address_pool" "ghes-lb-backend" {
   name            = "BackEndAddressPool"
 }
 
+resource "azurerm_lb_rule" "web" {
+  resource_group_name            = azurerm_resource_group.myterraformgroup.name
+  loadbalancer_id                = azurerm_lb.ghes-lb.id
+  name                           = "HTTPS"
+  protocol                       = "TCP"
+  frontend_port                  = 443
+  backend_port                   = 443
+  backend_address_pool_ids       = [azurerm_lb_backend_address_pool.ghes-lb-backend.id]
+  frontend_ip_configuration_name = "publicIPAddress"
+}
+
+resource "azurerm_lb_rule" "mgmnt" {
+  resource_group_name            = azurerm_resource_group.myterraformgroup.name
+  loadbalancer_id                = azurerm_lb.ghes-lb.id
+  name                           = "Management"
+  protocol                       = "TCP"
+  frontend_port                  = 8443
+  backend_port                   = 8443
+  backend_address_pool_ids       = [azurerm_lb_backend_address_pool.ghes-lb-backend.id]
+  frontend_ip_configuration_name = "publicIPAddress"
+}
+
+resource "azurerm_lb_rule" "ssh-mgmnt" {
+  resource_group_name            = azurerm_resource_group.myterraformgroup.name
+  loadbalancer_id                = azurerm_lb.ghes-lb.id
+  name                           = "SSHManagement"
+  protocol                       = "TCP"
+  frontend_port                  = 122
+  backend_port                   = 122
+  backend_address_pool_ids       = [azurerm_lb_backend_address_pool.ghes-lb-backend.id]
+  frontend_ip_configuration_name = "publicIPAddress"
+}
+
+
+resource "azurerm_lb_probe" "ssh" {
+  resource_group_name = azurerm_resource_group.myterraformgroup.name
+  loadbalancer_id     = azurerm_lb.ghes-lb.id
+  name                = "ssh-running-probe"
+  port                = 22
+}
 
 
 # Add security rules
@@ -163,9 +205,9 @@ resource "azurerm_virtual_machine_data_disk_attachment" "example" {
 
 resource "azurerm_lb_backend_address_pool_address" "ghes-test-member" {
   name                    = "ghes-server1"
-  backend_address_pool_id = data.azurerm_lb_backend_address_pool.ghes-lb-backend.id
-  virtual_network_id      = data.azurerm_virtual_network.myterraformnetwork.id
-  ip_address              = azurerm_linux_virtual_machine.ghes-test.private_ip_address
+  backend_address_pool_id = azurerm_lb_backend_address_pool.ghes-lb-backend.id
+  virtual_network_id      = azurerm_virtual_network.myterraformnetwork.id
+  ip_address              = azurerm_network_interface.ghesnic.private_ip_address
 }
 
 #
@@ -177,7 +219,7 @@ resource "azurerm_dns_a_record" "ghes-dns" {
   zone_name           = azurerm_dns_zone.example-public.name
   resource_group_name = azurerm_resource_group.myterraformgroup.name
   ttl                 = 300
-  target_resource_id  = azurerm_public_ip.ghespublicip.id
+  target_resource_id  = azurerm_public_ip.ghes-lb-public.id
 }
 
 
