@@ -46,10 +46,10 @@ resource "azurerm_lb" "ghes-lb" {
   }
 }
 
- resource "azurerm_lb_backend_address_pool" "ghes-lb-backend" {
-   loadbalancer_id     = azurerm_lb.ghes-lb.id
-   name                = "BackEndAddressPool"
- }
+resource "azurerm_lb_backend_address_pool" "ghes-lb-backend" {
+  loadbalancer_id = azurerm_lb.ghes-lb.id
+  name            = "BackEndAddressPool"
+}
 
 
 
@@ -160,6 +160,13 @@ resource "azurerm_virtual_machine_data_disk_attachment" "example" {
   caching            = "ReadWrite"
 }
 
+
+resource "azurerm_lb_backend_address_pool_address" "ghes-test-member" {
+  name                    = "ghes-server1"
+  backend_address_pool_id = data.azurerm_lb_backend_address_pool.ghes-lb-backend.id
+  virtual_network_id      = data.azurerm_virtual_network.myterraformnetwork.id
+  ip_address              = azurerm_linux_virtual_machine.ghes-test.private_ip_address
+}
 
 #
 # Add DNS Record for GHES
