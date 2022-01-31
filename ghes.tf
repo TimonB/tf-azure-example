@@ -50,7 +50,7 @@ resource "azurerm_network_security_rule" "ghes-secrules" {
   direction                   = "Inbound"
   access                      = "Allow"
   protocol                    = "Tcp"
-  destination_port_ranges     = ["22", "25", "80", "443", "8080", "8443", "9418"]
+  destination_port_ranges     = ["22", "25", "80", "122", "443", "8080", "8443", "9418"]
   source_port_range           = "*"
   source_address_prefix       = "*"
   destination_address_prefix  = "*"
