@@ -50,7 +50,7 @@ resource "azurerm_network_security_rule" "ghes-secrules" {
   direction                   = "Inbound"
   access                      = "Allow"
   protocol                    = "Tcp"
-  destination_port_ranges     = ["22", "25", "80", "122", "443", "8080", "8443", "9418"]
+  destination_port_ranges     = ["22", "25", "80", "443", "8080", "8443", "9418"]
   source_port_range           = "*"
   source_address_prefix       = "*"
   destination_address_prefix  = "*"
@@ -395,6 +395,16 @@ resource "azurerm_storage_account" "ghesstorageaccountrepo" {
   account_tier             = "Standard"
   min_tls_version          = "TLS1_2"
   account_replication_type = "LRS"
+  queue_properties {
+    logging {
+      delete                = true
+      read                  = true
+      write                 = true
+      version               = "1.0"
+      retention_policy_days = 10
+    }
+  }
+
 }
 
 resource "azurerm_storage_container" "ghesrepos" {
@@ -417,6 +427,16 @@ resource "azurerm_storage_account" "ghesstorageaccountaction" {
   account_tier             = "Standard"
   min_tls_version          = "TLS1_2"
   account_replication_type = "LRS"
+
+  queue_properties {
+    logging {
+      delete                = true
+      read                  = true
+      write                 = true
+      version               = "1.0"
+      retention_policy_days = 10
+    }
+  }
 }
 
 resource "azurerm_storage_container" "ghesactions" {
