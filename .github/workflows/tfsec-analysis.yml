@@ -26,23 +26,13 @@ jobs:
       - name: Clone repo
         uses: actions/checkout@v2
 
-#      - name: Run tfsec
-#        uses: tfsec/tfsec-sarif-action@9a83b5c3524f825c020e356335855741fd02745f
-#        with:
-#          sarif_file: tfsec.sarif         
-
-      - name: Run Trivy vulnerability scanner in IaC mode
-        uses: aquasecurity/trivy-action@master
+      - name: Run tfsec
+        uses: tfsec/tfsec-sarif-action@9a83b5c3524f825c020e356335855741fd02745f
         with:
-          scan-type: 'config'
-          hide-progress: false
-          format: 'table'
-          ignore-unfixed: true
-          severity: 'CRITICAL,HIGH'
-          output: 'trivy-results.sarif'
+          sarif_file: tfsec.sarif         
 
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v1
         with:
           # Path to SARIF file relative to the root of the repository
-          sarif_file: trivy-results.sarif  
+          sarif_file: tfsec.sarif  
