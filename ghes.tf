@@ -15,7 +15,16 @@ variable "username" {
 }
 
 
-# Create public IPs
+#
+#
+# GHES Primary
+#
+#
+#
+
+
+
+# Create public IP
 resource "azurerm_public_ip" "ghespublicip" {
   name                = "ghesPublicIP"
   location            = var.location
@@ -26,8 +35,6 @@ resource "azurerm_public_ip" "ghespublicip" {
     version = var.environment
   }
 }
-
-
 
 
 # Add security rules
@@ -137,6 +144,119 @@ resource "azurerm_virtual_machine_data_disk_attachment" "example" {
   caching            = "ReadWrite"
 }
 
+resource "azurerm_dns_a_record" "ghes-primary-dns" {
+  name                = "github-primary"
+  zone_name           = azurerm_dns_zone.example-public.name
+  resource_group_name = azurerm_resource_group.myterraformgroup.name
+  ttl                 = 300
+  target_resource_id  = azurerm_public_ip.ghespublicip.id
+}
+
+
+#
+#
+# GHES Secondary
+#
+#
+#
+
+resource "azurerm_public_ip" "ghes-secondary-publicip" {
+  name                = "ghes-secondary-publicip"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.myterraformgroup.name
+  allocation_method   = "Static"
+
+  tags = {
+    version = var.environment
+  }
+}
+
+
+resource "azurerm_network_interface" "ghes-secondary-nic" {
+  name                = "ghes-secondary-nic"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.myterraformgroup.name
+
+  ip_configuration {
+    name                          = "myNicConfiguration"
+    subnet_id                     = azurerm_subnet.ghes-subnet.id
+    private_ip_address_allocation = "Dynamic"
+    public_ip_address_id          = azurerm_public_ip.ghes-secondary-publicip.id
+  }
+
+  tags = {
+    version = var.environment
+  }
+}
+
+
+resource "azurerm_virtual_machine" "ghes-test-secondary" {
+  name                  = "ghes-test-secondary"
+  location              = var.location
+  resource_group_name   = azurerm_resource_group.myterraformgroup.name
+  network_interface_ids = [azurerm_network_interface.ghes-secondary-nic.id]
+  vm_size               = "Standard_DS11_v2"
+
+  # Uncomment this line to delete the OS disk automatically when deleting the VM
+  delete_os_disk_on_termination = true
+
+  # Uncomment this line to delete the data disks automatically when deleting the VM
+  delete_data_disks_on_termination = true
+
+  # Getting the available VM templates
+  # az vm image list --all -f GitHub-Enterprise
+  storage_image_reference {
+    publisher = "GitHub"
+    offer     = "GitHub-Enterprise"
+    sku       = "GitHub-Enterprise"
+#    version   = var.ghes-version
+    version   = "3.3.2"
+  }
+
+  storage_os_disk {
+    name              = "ghes-os-storage-secondary"
+    caching           = "ReadWrite"
+    create_option     = "FromImage"
+    managed_disk_type = "Premium_LRS"
+    disk_size_gb      = "200"
+  }
+
+  os_profile {
+    computer_name  = "ghes-test-secondary"
+    admin_username = var.username
+  }
+
+  os_profile_linux_config {
+    disable_password_authentication = true
+    ssh_keys {
+      path     = "/home/${var.username}/.ssh/authorized_keys"
+      key_data = var.ssh_public_key
+    }
+  }
+}
+
+resource "azurerm_managed_disk" "ghes-secondary-data" {
+  name                 = "ghes-secondary-disk"
+  location             = var.location
+  resource_group_name  = azurerm_resource_group.myterraformgroup.name
+  storage_account_type = "Standard_LRS"
+  create_option        = "Empty"
+  disk_size_gb         = 50
+}
+resource "azurerm_virtual_machine_data_disk_attachment" "secondary-attachment" {
+  managed_disk_id    = azurerm_managed_disk.ghes-secondary-data.id
+  virtual_machine_id = azurerm_virtual_machine.ghes-test-secondary.id
+  lun                = "10"
+  caching            = "ReadWrite"
+}
+
+resource "azurerm_dns_a_record" "ghes-secondary-dns" {
+  name                = "github-secondary"
+  zone_name           = azurerm_dns_zone.example-public.name
+  resource_group_name = azurerm_resource_group.myterraformgroup.name
+  ttl                 = 300
+  target_resource_id  = azurerm_public_ip.ghes-secondary-publicip.id
+}
 
 # Add Loadbalancer
 
@@ -235,8 +355,16 @@ resource "azurerm_lb_backend_address_pool_address" "ghes-test-member" {
   ip_address              = azurerm_network_interface.ghesnic.private_ip_address
 }
 
+
+resource "azurerm_lb_backend_address_pool_address" "ghes-secondary-member" {
+  name                    = "ghes-server-secondary"
+  backend_address_pool_id = azurerm_lb_backend_address_pool.ghes-lb-backend.id
+  virtual_network_id      = azurerm_virtual_network.myterraformnetwork.id
+  ip_address              = azurerm_network_interface.ghes-secondary-nic.private_ip_address
+}
+
 #
-# Add DNS Record for GHES
+# Add DNS Record for GHES Loadbalancer
 #
 
 resource "azurerm_dns_a_record" "ghes-dns" {
