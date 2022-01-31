@@ -395,15 +395,6 @@ resource "azurerm_storage_account" "ghesstorageaccountrepo" {
   account_tier             = "Standard"
   min_tls_version          = "TLS1_2"
   account_replication_type = "LRS"
-  queue_properties {
-    logging {
-      delete                = true
-      read                  = true
-      write                 = true
-      version               = "1.0"
-      retention_policy_days = 10
-    }
-  }
 
 }
 
@@ -427,16 +418,6 @@ resource "azurerm_storage_account" "ghesstorageaccountaction" {
   account_tier             = "Standard"
   min_tls_version          = "TLS1_2"
   account_replication_type = "LRS"
-
-  queue_properties {
-    logging {
-      delete                = true
-      read                  = true
-      write                 = true
-      version               = "1.0"
-      retention_policy_days = 10
-    }
-  }
 }
 
 resource "azurerm_storage_container" "ghesactions" {
