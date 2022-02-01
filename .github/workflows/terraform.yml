@@ -6,10 +6,6 @@ on:
     - main
   pull_request:
 
-    permissions:
-      actions: read
-      contents: read
-      security-events: write
 jobs:
   terraform:
     name: 'Terraform'
